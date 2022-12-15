@@ -6,8 +6,15 @@ const getUserWithEmail = function (email) {
 
   return pool
     .query(queryString, values)
-    .then((result) => result.rows)
-    .catch((error) => null);
+    .then((result) => {
+      if (!result.rows.length) {
+        return null;
+      }
+      return result.rows[0];
+    })
+    .catch((error) => {
+      console.log(error.message);
+    });
 };
 
 const getUserWithId = function (id) {
@@ -16,40 +23,67 @@ const getUserWithId = function (id) {
 
   return pool
     .query(queryString, values)
-    .then((result) => result.rows)
-    .catch((error) => null);
+    .then((result) => {
+      if (!result.rows.length) {
+        return null;
+      }
+      return result.rows[0];
+    })
+    .catch((error) => {
+      console.log(error.message);
+    });
 };
 
 const addUser = function (user) {
   const { name, email, password } = user;
-
 
   const queryString = `INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING *`;
   const values = [name, email, password];
 
   return pool
     .query(queryString, values)
-    .then((result) => result.rows)
-    .catch((error) => null);
+    .then((result) => {
+      if (!result.rows.length) {
+        return null;
+      }
+      return result.rows[0];
+    })
+    .catch((error) => {
+      console.log(error.message);
+    });
 };
 
 const getAllReservations = function (guestId, limit = 10) {
   const values = [guestId, limit];
   const queryString =
-    "SELECT * FROM reservations WHERE guestt_id = $1 ORDER BY id LIMIT $2";
+    "SELECT * FROM reservations WHERE guest_id = $1 ORDER BY id LIMIT $2";
   return pool
     .query(queryString, values)
-    .then((result) => result.rows)
-    .catch((error) => error);
+    .then((result) => {
+      if (!result.rows.length) {
+        return null;
+      }
+      return result.rows;
+    })
+    .catch((error) => {
+      console.log(error.message);
+    });
 };
 
 const getAllProperties = function (options, limit = 10) {
-  const values = [options, limit];
+  const values = [limit];
   const queryString = "SELECT * FROM properties LIMIT $1";
   return pool
     .query(queryString, values)
-    .then((result) => result.rows)
-    .catch((error) => error);
+    .then((result) => {
+      if (!result.rows.length) {
+        return null;
+      }
+      return result.rows;
+    })
+    .catch((error) => {
+      console.log(error.message);
+    });
 };
 
 const addProperty = function (property) {
